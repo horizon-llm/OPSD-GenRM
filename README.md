@@ -41,11 +41,11 @@ cp opsd_genrm_recipes/credentials.env.example opsd_genrm_recipes/credentials.env
 
 | Split | Dataset | Preprocessor |
 |---|---|---|
-| Train / validation | HelpSteer3, deduplicated ([`opsd-genrm/dedup_filtered_HS3`](https://huggingface.co/datasets/opsd-genrm/dedup_filtered_HS3)) | `data/preprocess_helpsteer3_dedup.py` |
+| Train / validation | HelpSteer3 ([`nvidia/HelpSteer3`](https://huggingface.co/datasets/nvidia/HelpSteer3)), deduplicated ([`opsd-genrm/dedup_filtered_HS3`](https://huggingface.co/datasets/opsd-genrm/dedup_filtered_HS3)) | `data/preprocess_helpsteer3_dedup.py` |
 | Evaluation | [RM-Bench](https://huggingface.co/datasets/THU-KEG/RM-Bench) | `data/preprocess_rmbench.py` |
 | Evaluation | [RewardBench 2](https://huggingface.co/datasets/allenai/reward-bench-2) | `data/preprocess_rewardbench2.py` |
 
-The released deduplicated HelpSteer3 dataset does **not** include the `rubric` column used in the rubric-feedback experiments. To run rubric-based training, users must first generate a task-specific rubric for each training example using a rubric-generation method of their choice and add the generated rubrics to the dataset as a `rubric` column.
+The deduplicated HelpSteer3 dataset does **not** include the `rubric` column used in the rubric-feedback experiments. To run rubric-based training, users must first generate a task-specific rubric for each training example using a rubric-generation method of their choice and add the generated rubrics to the dataset as a `rubric` column.
 
 The launchers run these scripts automatically. `--feedback_mode` selects the teacher's privileged information: `reasoning` uses the annotator rationale, while `rubric` uses the user-provided `rubric` column. `--prompt_template` selects the judge instruction: `pair_rm` asks for task-specific quality dimensions before comparison; `pair_rm_rubric` asks for a ranked task-specific rubric before comparison. The teacher prompt uses the same instruction as the student, so the two differ only by the feedback. Each template's data is written to `datasets/<template>/`.
 
@@ -63,7 +63,7 @@ Each launcher preprocesses the data (into `datasets/`), trains, and converts eve
 | `run_rubric_sd.sh` | Self-distillation | task rubric | none |
 | `run_rubric_sd_mask70.sh` | Position-selective self-distillation | task rubric | `entropy_diff_mask`, bottom 30% of ΔH |
 
-> **Note:** The rubric-based launchers require the training dataset to contain a `rubric` column. Because rubrics are not distributed with the released deduplicated HelpSteer3 dataset, users must generate them separately and add this column before running the rubric experiments.
+> **Note:** The rubric-based launchers require the training dataset to contain a `rubric` column. Because rubrics are not distributed with the HelpSteer3 dataset, users must generate them separately and add this column before running the rubric experiments.
 
 **Qwen3-4B** (`opsd_genrm_recipes/qwen3_4B/`, 1 node x 8 GPUs):
 
